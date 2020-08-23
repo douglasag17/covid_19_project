@@ -1,0 +1,54 @@
+susceptibles ~ 0.03918831 + 0.10210873*ipm + 0.35320726*personas_km2 + 0.64920919*p_alguna_morbilidad
+    -0.04031696*I(ipm^2) -0.02956905*I(edad_promedio^2) + 0.06242712*I(p_alguna_morbilidad^2)
+
+S= F(R(t-1), I(t-1), D(t-1), densidad, ind_pob, morbi, edad_promedio)
+
+R2ajus = 0.9937
+MSE = 0.1028392
+AIC = -85.2
+
+expuestos ~ -0.20017 + 0.05772*ipm + 0.26849*personas_km2 + 0.20567*p_alguna_morbilidad + 
+    0.13431*I(personas_km2^2) + 0.10525*I(p_alguna_morbilidad^2)
+
+E= F(E(t-1), densidad, morbi, ind_po)
+
+R2ajus = 0.9884
+MSE = 0.07761282
+AIC = -73.53
+
+
+infectados ~ 0.07062 + 0.42037*personas_km2 -0.16060edad_promedio + 0.49362*p_alguna_morbilidad + 
+    0.10401*I(personas_km2^2) -0.13267I(p_alguna_morbilidad^2)
+
+I= F1(I(t-1), densidad, morbi, edad_promedio)
+I= F2(I(t-1),I(t-7), densidad, morbi, edad_promedio)
+
+
+R2ajus = 0.926
+MSE = 0.6110984
+AIC = -42.59
+
+
+recuperados ~ -0.02062 + 0.29698*personas_km2 -0.10485*edad_promedio + 0.38817*p_alguna_morbilidad + 
+    0.16155*I(personas_km2^2) -0.09852I(p_alguna_morbilidad^2)
+
+R= F(R(t-1), densidad, morbi, edad_promedio)
+R= F(R(t-1), R(t-7), densidad, morbi, edad_promedio)
+
+
+R2ajus = 0.9383
+MSE = 0.3555707
+AIC = -38.66
+
+decesos ~ 0.28948 + 0.67815*personas_km2 -0.20833*edad_promedio + 0.65395*p_alguna_morbilidad
+    -0.24170*I(p_alguna_morbilidad^2)
+
+D= F(D(t-1), densidad, morbi, edad_promedio)
+
+
+R2ajus = 0.8415
+MSE = 0.9639398
+AIC=-32.48
+
+
+mayores de 65 y poblacion total 
