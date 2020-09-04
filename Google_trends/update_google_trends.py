@@ -91,3 +91,4 @@ if __name__ == "__main__":
     current_date = datetime.now().date().strftime("%Y-%m-%d")
     get_trends_colombia(pytrend, kw_list, current_date, "google_trends_colombia.csv")
     get_trends_departments(pytrend, kw_list, current_date, "google_trends_departamentos.csv")
+
