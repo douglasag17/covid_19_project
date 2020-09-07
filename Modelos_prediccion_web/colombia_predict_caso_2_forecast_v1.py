@@ -162,7 +162,7 @@ def main():
     df["decesos_predicho"] = np.nan
 
     n = df.shape[0]
-    for i in range(n - n, n):
+    for i in range(n - 30, n):
         fecha = df.loc[i, "fecha"]
         df = predict_s(df, i, "./pkl/s_colombia_2.pkl")
         df = predict_e(df, i, "./pkl/e_colombia_2.pkl")

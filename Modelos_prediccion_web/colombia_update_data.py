@@ -248,7 +248,8 @@ def get_ird():
 
     # get to the API
     client = Socrata("www.datos.gov.co", "6aek14sky6N2pVL12sw1qfzoQ")
-    results = client.get("gt2j-8ykr", limit=10000000)
+    select = "id_de_caso, fecha_de_notificaci_n, departamento, fis, fecha_de_muerte, fecha_diagnostico, fecha_recuperado, fecha_reporte_web"
+    results = client.get("gt2j-8ykr", limit=5000000, select=select)
     df_casos = pd.DataFrame.from_records(results)
     df_casos = df_casos.fillna("-   -")
 
@@ -329,6 +330,7 @@ def get_ird():
         right_on=["fecha_reporte_web", "departamento"],
     )
     df_cuenta_departamento_dia = df_cuenta_departamento_dia.fillna(0)
+    client.close()
 
     return df_cuenta_departamento_dia
 
@@ -394,8 +396,8 @@ def merge_ird_const(df_cuenta_departamento_dia, df_variables_constantes_dia):
 def get_exposed():
 
     # Expuestos
-    client = Socrata("www.datos.gov.co", None)
-    results = client.get("8835-5baf", limit=1000000)
+    client = Socrata("www.datos.gov.co", "6aek14sky6N2pVL12sw1qfzoQ")
+    results = client.get("8835-5baf", limit=5000000)
     df_expuestos_col = pd.DataFrame.from_records(results)
     df_expuestos_col = df_expuestos_col[["fecha", "acumuladas"]]
     df_expuestos_col = df_expuestos_col.iloc[1:].reset_index(drop=True)
@@ -414,16 +416,16 @@ def get_exposed():
                 df_expuestos_col.loc[i, "acumuladas"]
                 - df_expuestos_col.loc[i - 1, "acumuladas"]
             )
-
+    client.close()
     return df_expuestos_col
 
 
 def get_df_ird_constantes_dia_col(df_ird_constantes_dia, df_variables_constantes_dia):
 
     # IRD por dia
-    df_ird_col = df_ird_constantes_dia.groupby(["fecha"])[
+    df_ird_col = df_ird_constantes_dia.groupby(["fecha"])[[
         "infectados", "recuperados", "decesos"
-    ].sum()
+    ]].sum()
     df_ird_col.reset_index(level=0, inplace=True)
 
     # Constantes por dia
