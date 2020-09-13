@@ -1,8 +1,11 @@
+import json
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import numpy as np
+from scipy import stats
+import copy
 
 
 def predict_s(df, index, filename):
@@ -139,7 +142,7 @@ def predict_d(df, index, filename):
 def plot_df(df, y, title):
 
     graph = df.plot(
-        x="Date",
+        x="fecha",
         y=y,
         kind="line",
         figsize=(20, 10),
@@ -151,10 +154,60 @@ def plot_df(df, y, title):
     plt.ylabel("quantity")
     plt.show()
 
+def get_prediction_interval(df, i, variable, prediction, y_test, test_predictions, pi=.95):
+    '''
+    Get a prediction interval for a linear regression.
+    
+    INPUTS: 
+        - df
+        - index
+        - variable: S, E, I, R, D
+        - Single prediction, 
+        - y_test
+        - All test set predictions,
+        - Prediction interval threshold (default = .95) 
+    OUTPUT: 
+        - Prediction interval for single prediction
+    '''
+    
+    #get standard deviation of y_test
+    sum_errs = np.sum((y_test - test_predictions)**2)
+    stdev = np.sqrt(1 / (len(y_test) - 2) * sum_errs)
+
+    #get interval from standard deviation
+    one_minus_pi = 1 - pi
+    ppf_lookup = 1 - (one_minus_pi / 2)
+    z_score = stats.norm.ppf(ppf_lookup)
+    interval = z_score * stdev
+
+    #generate prediction interval lower and upper bound
+    lower, upper = prediction - interval, prediction + interval
+    if lower < 0: lower = 0
+
+    # store results
+    if variable == 'S':
+        df.loc[i, "susceptibles_lower"] = lower
+        df.loc[i, "susceptibles_upper"] = upper
+    if variable == 'E':
+        df.loc[i, "expuestos_lower"] = lower
+        df.loc[i, "expuestos_upper"] = upper
+    if variable == 'I':
+        df.loc[i, "infectados_lower"] = lower
+        df.loc[i, "infectados_upper"] = upper
+    if variable == 'R':
+        df.loc[i, "recuperados_lower"] = lower
+        df.loc[i, "recuperados_upper"] = upper
+    if variable == 'D':
+        df.loc[i, "decesos_lower"] = lower
+        df.loc[i, "decesos_upper"] = upper
+
+    return df
+
 
 def main():
 
-    df = pd.read_csv("./data/seird_constantes_dia_colombia_dependencia_cruzada.csv")
+    df = pd.read_csv(
+        "./data/seird_constantes_dia_colombia_dependencia_cruzada.csv")
     df["susceptibles_predicho"] = np.nan
     df["expuestos_predicho"] = np.nan
     df["infectados_predicho"] = np.nan
@@ -164,6 +217,8 @@ def main():
     n = df.shape[0]
     for i in range(n - 30, n):
         fecha = df.loc[i, "fecha"]
+        
+        # predicciones
         df = predict_s(df, i, "./pkl/s_colombia_2.pkl")
         df = predict_e(df, i, "./pkl/e_colombia_2.pkl")
         df = predict_i(df, i, "./pkl/i_colombia_2.pkl")
@@ -172,9 +227,11 @@ def main():
 
     # agregar 6 dias mas
     window_forecast = 6
+    df_ = copy.deepcopy(df)
     for i in range(window_forecast):
         n = df.shape[0]
-        last_date = datetime.strptime(df["fecha"].iloc[[n - 1]].values[0], "%Y-%m-%d")
+        last_date = datetime.strptime(
+            df["fecha"].iloc[[n - 1]].values[0], "%Y-%m-%d")
         last_date = last_date + timedelta(days=1)
         t_1 = df.iloc[[n - 1]]
         t_2 = df.iloc[[n - 2]]
@@ -231,39 +288,51 @@ def main():
         df = predict_r(df, n, "./pkl/r_colombia_2.pkl")
         df = predict_d(df, n, "./pkl/d_colombia_2.pkl")
 
-    print(
-        df[
-            [
-                "fecha",
-                "susceptibles_predicho",
-                "expuestos_predicho",
-                "infectados_predicho",
-                "recuperados_predicho",
-                "decesos_predicho",
-            ]
-        ].tail(10)
-    )
+    # intervalos de confianza
+    df["susceptibles_lower"] = np.nan
+    df["expuestos_lower"] = np.nan
+    df["infectados_lower"] = np.nan
+    df["recuperados_lower"] = np.nan
+    df["decesos_lower"] = np.nan
+    df["susceptibles_upper"] = np.nan
+    df["expuestos_upper"] = np.nan
+    df["infectados_upper"] = np.nan
+    df["recuperados_upper"] = np.nan
+    df["decesos_upper"] = np.nan
+    n = df.shape[0]
+    for i in range(n - window_forecast - 30, n):
+        df = get_prediction_interval(df, i, 'S', df.loc[i, "susceptibles_predicho"], df_["susceptibles"].tail(30).to_numpy(), df_["susceptibles_predicho"].tail(30).to_numpy())
+        df = get_prediction_interval(df, i, 'E', df.loc[i, "expuestos_predicho"], df_["expuestos"].tail(30).to_numpy(), df_["expuestos_predicho"].tail(30).to_numpy())
+        df = get_prediction_interval(df, i, 'I', df.loc[i, "infectados_predicho"], df_["infectados"].tail(30).to_numpy(), df_["infectados_predicho"].tail(30).to_numpy())
+        df = get_prediction_interval(df, i, 'R', df.loc[i, "recuperados_predicho"], df_["recuperados"].tail(30).to_numpy(), df_["recuperados_predicho"].tail(30).to_numpy())
+        df = get_prediction_interval(df, i, 'D', df.loc[i, "decesos_predicho"], df_["decesos"].tail(30).to_numpy(), df_["decesos_predicho"].tail(30).to_numpy())
 
-    # cambio de nombre
-    df = df.rename(
-        columns={
-            "infectados": "Infected reported",
-            "infectados_predicho": "Infected predicted",
-            "fecha": "Date"
-        }
-    )
+    # print(df[['susceptibles_lower', 'susceptibles_predicho', 'susceptibles_upper']].tail(40))
+    # print(df[['expuestos_lower', 'expuestos_predicho', 'expuestos_upper']].tail(40))
+    # print(df[['infectados_lower', 'infectados_predicho', 'infectados_upper']].tail(40))
+    # print(df[['recuperados_lower', 'recuperados_predicho', 'recuperados_upper']].tail(40))
+    # print(df[['decesos_lower', 'decesos_predicho', 'decesos_upper']].tail(40))
 
     # graficas valores reales vs predichos
-    #plot_df(df, ["susceptibles", "susceptibles_predicho"], "susceptibles reales vs susceptibles predicho")
-    plot_df(df, ["expuestos", "expuestos_predicho"], "expuestos reales vs expuestos predicho")
-    plot_df(
-        df,
-        ["Infected reported", "Infected predicted"],
-        "Infected reported vs Infected predicted",
-    )
-    plot_df(df, ["recuperados", "recuperados_predicho"], "recuperados reales vs recuperados predicho")
-    plot_df(df, ["decesos", "decesos_predicho"], "decesos reales vs decesos predicho")
-    return df.to_dict(orient="list")
+    # plot_df(df, ["susceptibles",'susceptibles_lower', 'susceptibles_predicho', 'susceptibles_upper'], "susceptibles reales vs susceptibles predicho")
+    # plot_df(df, ["expuestos", 'expuestos_lower', 'expuestos_predicho', 'expuestos_upper'], "expuestos reales vs expuestos predicho")
+    # plot_df(df, ["infectados", 'infectados_lower', 'infectados_predicho', 'infectados_upper'], "infectados reales vs infectados predicho")
+    # plot_df(df, ["recuperados", 'recuperados_lower', 'recuperados_predicho', 'recuperados_upper'], "recuperados reales vs recuperados predicho")
+    # plot_df(df, ["decesos", 'decesos_lower', 'decesos_predicho', 'decesos_upper'], "decesos reales vs decesos predicho")
+    
+    return df.round().to_dict(orient="list")
 
 
-main()
+if __name__ == "__main__":
+    main()
+    # df = main()
+    # keys = ['fecha',
+    #         'infectados','infectados_predicho',
+    #         'decesos','decesos_predicho',
+    #         'recuperados','recuperados_predicho',
+    #         'susceptibles','susceptibles_predicho',
+    #         'expuestos','expuestos_predicho']
+    # data = {k:v for k,v in df.items() if k in keys}
+    
+    # with open('estimations/co.json', 'w') as fp:
+    #     json.dump(data, fp)
