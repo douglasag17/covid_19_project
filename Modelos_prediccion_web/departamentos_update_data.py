@@ -246,7 +246,8 @@ def get_ird():
 
     # get to the API
     client = Socrata("www.datos.gov.co", "6aek14sky6N2pVL12sw1qfzoQ")
-    results = client.get("gt2j-8ykr", limit=10000000)
+    select = "id_de_caso, fecha_de_notificaci_n, departamento, fis, fecha_de_muerte, fecha_diagnostico, fecha_recuperado, fecha_reporte_web"
+    results = client.get("gt2j-8ykr", limit=5000000, select=select)
     df_casos = pd.DataFrame.from_records(results)
     df_casos = df_casos.fillna("-   -")
 
