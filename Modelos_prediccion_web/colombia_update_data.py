@@ -248,7 +248,7 @@ def get_ird():
 
     # get to the API
     client = Socrata("www.datos.gov.co", "6aek14sky6N2pVL12sw1qfzoQ")
-    select = "id_de_caso, fecha_de_notificaci_n, departamento, fis, fecha_de_muerte, fecha_diagnostico, fecha_recuperado, fecha_reporte_web"
+    select = "id_de_caso, fecha_de_notificaci_n, departamento, fecha_inicio_sintomas, fecha_muerte, fecha_diagnostico, fecha_recuperado, fecha_reporte_web"
     results = client.get("gt2j-8ykr", limit=5000000, select=select)
     df_casos = pd.DataFrame.from_records(results)
     df_casos = df_casos.fillna("-   -")
@@ -257,8 +257,8 @@ def get_ird():
     df_casos["fecha_diagnostico"] = df_casos["fecha_diagnostico"].transform(
         lambda x: x[:10] if x != "-   -" else x
     )
-    df_casos["fis"] = df_casos["fis"].transform(lambda x: x[:10] if x != "-   -" else x)
-    df_casos["fecha_de_muerte"] = df_casos["fecha_de_muerte"].transform(
+    df_casos["fecha_inicio_sintomas"] = df_casos["fecha_inicio_sintomas"].transform(lambda x: x[:10] if x != "-   -" else x)
+    df_casos["fecha_muerte"] = df_casos["fecha_muerte"].transform(
         lambda x: x[:10] if x != "-   -" else x
     )
     df_casos["fecha_de_notificaci_n"] = df_casos["fecha_de_notificaci_n"].transform(
@@ -303,11 +303,11 @@ def get_ird():
         .rename(columns={"id_de_caso": "infectados"})
     )
     df_fallecidos_departamento_dia = (
-        df_casos[df_casos["fecha_de_muerte"] != "-   -"]
-        .groupby(["fecha_reporte_web", "departamento"])["fecha_de_muerte"]
+        df_casos[df_casos["fecha_muerte"] != "-   -"]
+        .groupby(["fecha_reporte_web", "departamento"])["fecha_muerte"]
         .count()
         .reset_index()
-        .rename(columns={"fecha_de_muerte": "decesos"})
+        .rename(columns={"fecha_muerte": "decesos"})
     )
     df_recuperados_departamento_dia = (
         df_casos[df_casos["fecha_recuperado"] != "-   -"]
