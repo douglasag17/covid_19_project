@@ -248,34 +248,28 @@ def get_ird():
 
     # get to the API
     client = Socrata("www.datos.gov.co", "6aek14sky6N2pVL12sw1qfzoQ")
-    select = "id_de_caso, departamento_nom, fecha_muerte, fecha_recuperado, fecha_reporte_web" # fecha_de_notificaci_n, fecha_inicio_sintomas, fecha_diagnostico
+    select = "id_de_caso, fecha_de_notificaci_n, departamento, fis, fecha_de_muerte, fecha_diagnostico, fecha_recuperado, fecha_reporte_web"
     results = client.get("gt2j-8ykr", limit=5000000, select=select)
     df_casos = pd.DataFrame.from_records(results)
     df_casos = df_casos.fillna("-   -")
-    df_casos = df_casos.rename(columns={"departamento_nom": "departamento"})
 
     # Transformacion campos tipo fecha
-    # df_casos["fecha_diagnostico"] = df_casos["fecha_diagnostico"].transform(
-    #     lambda x: x[:10].split(" ")[0] if x != "-   -" else x
-    # )
-    # df_casos["fecha_inicio_sintomas"] = df_casos["fecha_inicio_sintomas"].transform(lambda x: x[:10].split(" ")[0] if x != "-   -" else x)
-    df_casos["fecha_muerte"] = df_casos["fecha_muerte"].transform(
-        lambda x: x[:10].split(" ")[0] if x != "-   -" else x
+    df_casos["fecha_diagnostico"] = df_casos["fecha_diagnostico"].transform(
+        lambda x: x[:10] if x != "-   -" else x
     )
-    # df_casos["fecha_de_notificaci_n"] = df_casos["fecha_de_notificaci_n"].transform(
-    #     lambda x: x[:10].split(" ")[0] if x != "-   -" else x
-    # )
+    df_casos["fis"] = df_casos["fis"].transform(lambda x: x[:10] if x != "-   -" else x)
+    df_casos["fecha_de_muerte"] = df_casos["fecha_de_muerte"].transform(
+        lambda x: x[:10] if x != "-   -" else x
+    )
+    df_casos["fecha_de_notificaci_n"] = df_casos["fecha_de_notificaci_n"].transform(
+        lambda x: x[:10] if x != "-   -" else x
+    )
     df_casos["fecha_recuperado"] = df_casos["fecha_recuperado"].transform(
-        lambda x: x[:10].split(" ")[0] if x != "-   -" else x
+        lambda x: x[:10] if x != "-   -" else x
     )
     df_casos["fecha_reporte_web"] = df_casos["fecha_reporte_web"].transform(
-        lambda x: x[:10].split(" ")[0]  if x != "-   -" else x
+        lambda x: x[:10] if x != "-   -" else x
     )
-
-    # Formato de fechas
-    df_casos["fecha_muerte"] = df_casos["fecha_muerte"].apply(lambda x: x if x=="-   -" else datetime.strptime(x, "%d/%m/%Y").strftime("%Y-%m-%d"))
-    df_casos["fecha_recuperado"] = df_casos["fecha_recuperado"].apply(lambda x: x if x=="-   -" else datetime.strptime(x, "%d/%m/%Y").strftime("%Y-%m-%d"))
-    df_casos["fecha_reporte_web"] = df_casos["fecha_reporte_web"].apply(lambda x: x if x=="-   -" else datetime.strptime(x, "%d/%m/%Y").strftime("%Y-%m-%d"))
 
     # Tranformacion nombres departamentos
     df_casos["departamento"] = df_casos["departamento"].str.lower()
@@ -309,11 +303,11 @@ def get_ird():
         .rename(columns={"id_de_caso": "infectados"})
     )
     df_fallecidos_departamento_dia = (
-        df_casos[df_casos["fecha_muerte"] != "-   -"]
-        .groupby(["fecha_reporte_web", "departamento"])["fecha_muerte"]
+        df_casos[df_casos["fecha_de_muerte"] != "-   -"]
+        .groupby(["fecha_reporte_web", "departamento"])["fecha_de_muerte"]
         .count()
         .reset_index()
-        .rename(columns={"fecha_muerte": "decesos"})
+        .rename(columns={"fecha_de_muerte": "decesos"})
     )
     df_recuperados_departamento_dia = (
         df_casos[df_casos["fecha_recuperado"] != "-   -"]
@@ -780,237 +774,3 @@ def main():
 
 
 main()
-
-
-
-
-"id", 
-"location", 
-"text", 
-"target", 
-"finished_lemma", 
-"keyword_ablaze", 
-"keyword_accident", 
-"keyword_aftershock", 
-"keyword_airplane_20accident", 
-"keyword_ambulance", 
-"keyword_annihilated", 
-"keyword_annihilation", 
-"keyword_apocalypse", 
-"keyword_armageddon", 
-"keyword_army", 
-"keyword_arson", 
-"keyword_arsonist", 
-"keyword_attack", 
-"keyword_attacked", 
-"keyword_avalanche", 
-"keyword_battle", 
-"keyword_bioterror", 
-"keyword_bioterrorism", 
-"keyword_blaze", 
-"keyword_blazing", 
-"keyword_bleeding", 
-"keyword_blew_20up", 
-"keyword_blight", 
-"keyword_blizzard", 
-"keyword_blood", 
-"keyword_bloody", 
-"keyword_blown_20up", 
-"keyword_body_20bag", 
-"keyword_body_20bagging", 
-"keyword_body_20bags", 
-"keyword_bomb", 
-"keyword_bombed", 
-"keyword_bombing", 
-"keyword_bridge_20collapse", 
-"keyword_buildings_20burning", 
-"keyword_buildings_20on_20fire", 
-"keyword_burned", 
-"keyword_burning", 
-"keyword_burning_20buildings", 
-"keyword_bush_20fires", 
-"keyword_casualties", 
-"keyword_casualty", 
-"keyword_catastrophe", 
-"keyword_catastrophic", 
-"keyword_chemical_20emergency", 
-"keyword_cliff_20fall", 
-"keyword_collapse", 
-"keyword_collapsed", 
-"keyword_collide", 
-"keyword_collided", 
-"keyword_collision", 
-"keyword_crash", 
-"keyword_crashed", 
-"keyword_crush", 
-"keyword_crushed", 
-"keyword_curfew", 
-"keyword_cyclone", 
-"keyword_damage", 
-"keyword_danger", 
-"keyword_dead", 
-"keyword_death", 
-"keyword_deaths", 
-"keyword_debris", 
-"keyword_deluge", 
-"keyword_deluged", 
-"keyword_demolish", 
-"keyword_demolished", 
-"keyword_demolition", 
-"keyword_derail", 
-"keyword_derailed", 
-"keyword_derailment", 
-"keyword_desolate", 
-"keyword_desolation", 
-"keyword_destroy", 
-"keyword_destroyed", 
-"keyword_destruction", 
-"keyword_detonate", 
-"keyword_detonation", 
-"keyword_devastated", 
-"keyword_devastation", 
-"keyword_disaster", 
-"keyword_displaced", 
-"keyword_drought", 
-"keyword_drown", 
-"keyword_drowned", 
-"keyword_drowning", 
-"keyword_dust_20storm", 
-"keyword_earthquake", 
-"keyword_electrocute", 
-"keyword_electrocuted", 
-"keyword_emergency", 
-"keyword_emergency_20plan", 
-"keyword_emergency_20services", 
-"keyword_engulfed", 
-"keyword_epicentre", 
-"keyword_evacuate", 
-"keyword_evacuated", 
-"keyword_evacuation", 
-"keyword_explode", 
-"keyword_exploded", 
-"keyword_explosion", 
-"keyword_eyewitness", 
-"keyword_famine", 
-"keyword_fatal", 
-"keyword_fatalities", 
-"keyword_fatality", 
-"keyword_fear", 
-"keyword_fire", 
-"keyword_fire_20truck", 
-"keyword_first_20responders", 
-"keyword_flames", 
-"keyword_flattened", 
-"keyword_flood", 
-"keyword_flooding", 
-"keyword_floods", 
-"keyword_forest_20fire", 
-"keyword_forest_20fires", 
-"keyword_hail", 
-"keyword_hailstorm", 
-"keyword_harm", 
-"keyword_hazard", 
-"keyword_hazardous", 
-"keyword_heat_20wave", 
-"keyword_hellfire", 
-"keyword_hijack", 
-"keyword_hijacker", 
-"keyword_hijacking", 
-"keyword_hostage", 
-"keyword_hostages", 
-"keyword_hurricane", 
-"keyword_injured", 
-"keyword_injuries", 
-"keyword_injury", 
-"keyword_inundated", 
-"keyword_inundation", 
-"keyword_keyword", 
-"keyword_landslide", 
-"keyword_lava", 
-"keyword_lightning", 
-"keyword_loud_20bang", 
-"keyword_mass_20murder", 
-"keyword_mass_20murderer", 
-"keyword_massacre", 
-"keyword_mayhem", 
-"keyword_meltdown", 
-"keyword_military", 
-"keyword_mudslide", 
-"keyword_natural_20disaster", 
-"keyword_nuclear_20disaster", 
-"keyword_nuclear_20reactor", 
-"keyword_obliterate", 
-"keyword_obliterated", 
-"keyword_obliteration", 
-"keyword_oil_20spill", 
-"keyword_outbreak", 
-"keyword_pandemonium", 
-"keyword_panic", 
-"keyword_panicking", 
-"keyword_police", 
-"keyword_quarantine", 
-"keyword_quarantined", 
-"keyword_radiation_20emergency", 
-"keyword_rainstorm", 
-"keyword_razed", 
-"keyword_refugees", 
-"keyword_rescue", 
-"keyword_rescued", 
-"keyword_rescuers", 
-"keyword_riot", 
-"keyword_rioting", 
-"keyword_rubble", 
-"keyword_ruin", 
-"keyword_sandstorm", 
-"keyword_screamed", 
-"keyword_screaming", 
-"keyword_screams", 
-"keyword_seismic", 
-"keyword_sinkhole", 
-"keyword_sinking", 
-"keyword_siren", 
-"keyword_sirens", 
-"keyword_smoke", 
-"keyword_snowstorm", 
-"keyword_storm", 
-"keyword_stretcher", 
-"keyword_structural_20failure", 
-"keyword_suicide_20bomb", 
-"keyword_suicide_20bomber", 
-"keyword_suicide_20bombing", 
-"keyword_sunk", 
-"keyword_survive", 
-"keyword_survived", 
-"keyword_survivors", 
-"keyword_terrorism", 
-"keyword_terrorist", 
-"keyword_threat", 
-"keyword_thunder", 
-"keyword_thunderstorm", 
-"keyword_tornado", 
-"keyword_tragedy", 
-"keyword_trapped", 
-"keyword_trauma", 
-"keyword_traumatised", 
-"keyword_trouble", 
-"keyword_tsunami", 
-"keyword_twister", 
-"keyword_typhoon", 
-"keyword_upheaval", 
-"keyword_violent_20storm", 
-"keyword_volcano", 
-"keyword_war_20zone", 
-"keyword_weapon", 
-"keyword_weapons", 
-"keyword_whirlwind", 
-"keyword_wild_20fires", 
-"keyword_wildfire", 
-"keyword_windstorm", 
-"keyword_wounded", 
-"keyword_wounds", 
-"keyword_wreck", 
-"keyword_wreckage", 
-"keyword_wrecked", 
-"word_count", 
-"unique_word_count", 
-"stop_words_count"
