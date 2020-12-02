@@ -222,79 +222,78 @@ def calculate_susceptible(df_ird_constantes_dia):
 
 def main():
 
-    # # get poblacion total
-    # df_densidad_poblacional = get_population_density(
-    #     "./data/densidad_poblacional_x_departamento.csv"
-    # )
+    # get poblacion total
+    df_densidad_poblacional = get_population_density(
+        "./data/densidad_poblacional_x_departamento.csv"
+    )
 
-    # # get constants per day
-    # df_densidad_poblacional = get_const_per_day(df_densidad_poblacional)
+    # get constants per day
+    df_densidad_poblacional = get_const_per_day(df_densidad_poblacional)
 
-    # # get data of infected, recovered and deceased using the api of ins
-    # df_cuenta_departamento_dia = get_ird()
+    # get data of infected, recovered and deceased using the api of ins
+    df_cuenta_departamento_dia = get_ird()
 
-    # # merge df_cuenta_departamento_dia with df_densidad_poblacional
-    # df_cuenta_departamento_dia = merge_ird_const(
-    #     df_cuenta_departamento_dia, df_densidad_poblacional
-    # )
+    # merge df_cuenta_departamento_dia with df_densidad_poblacional
+    df_cuenta_departamento_dia = merge_ird_const(
+        df_cuenta_departamento_dia, df_densidad_poblacional
+    )
 
-    # # calculate susceptible
-    # df_sird_constantes_dia = calculate_susceptible(df_cuenta_departamento_dia)
-    # list_dep = ['amazonas',
-    #             'antioquia',
-    #             'arauca',
-    #             'atlantico',
-    #             'bogota',
-    #             'bolivar',
-    #             'boyaca',
-    #             'caldas',
-    #             'caqueta',
-    #             'casanare',
-    #             'cauca',
-    #             'cesar',
-    #             'choco',
-    #             'cordoba',
-    #             'cundinamarca',
-    #             'guainia',
-    #             'guaviare',
-    #             'huila',
-    #             'la guajira',
-    #             'magdalena',
-    #             'meta',
-    #             'narino',
-    #             'norte de santander',
-    #             'putumayo',
-    #             'quindio',
-    #             'risaralda',
-    #             'san andres y providencia',
-    #             'santander',
-    #             'sucre',
-    #             'tolima',
-    #             'valle del cauca',
-    #             'vaupes',
-    #             'vichada']
-    # df_sird_constantes_dia = df_sird_constantes_dia[df_sird_constantes_dia['departamento'].isin(
-    #     list_dep)]
-    # df_sird_constantes_dia.to_csv(
-    #     "./data/sird_constantes_dia.csv", index=False)
+    # calculate susceptible
+    df_sird_constantes_dia = calculate_susceptible(df_cuenta_departamento_dia)
+    list_dep = ['amazonas',
+                'antioquia',
+                'arauca',
+                'atlantico',
+                'bogota',
+                'bolivar',
+                'boyaca',
+                'caldas',
+                'caqueta',
+                'casanare',
+                'cauca',
+                'cesar',
+                'choco',
+                'cordoba',
+                'cundinamarca',
+                'guainia',
+                'guaviare',
+                'huila',
+                'la guajira',
+                'magdalena',
+                'meta',
+                'narino',
+                'norte de santander',
+                'putumayo',
+                'quindio',
+                'risaralda',
+                'san andres y providencia',
+                'santander',
+                'sucre',
+                'tolima',
+                'valle del cauca',
+                'vaupes',
+                'vichada']
+    df_sird_constantes_dia = df_sird_constantes_dia[df_sird_constantes_dia['departamento'].isin(
+        list_dep)]
+    df_sird_constantes_dia.to_csv(
+        "./data/sird_constantes_dia.csv", index=False)
 
-    # # get average SIRD
-    # df_sird_prom = df_sird_constantes_dia.groupby(
-    #     ["departamento"])["susceptibles", "infectados", "recuperados", "decesos"].mean()
+    # get average SIRD
+    df_sird_prom = df_sird_constantes_dia.groupby(
+        ["departamento"])["susceptibles", "infectados", "recuperados", "decesos"].mean()
 
-    # # read constants variables
-    # data_embeddings = pd.read_csv("./data/variables_constantes.csv")
-    # data_embeddings = data_embeddings.drop(
-    #     ["susceptibles", "infectados", "recuperados", "decesos"], 1
-    # )
+    # read constants variables
+    data_embeddings = pd.read_csv("./data/variables_constantes.csv")
+    data_embeddings = data_embeddings.drop(
+        ["susceptibles", "infectados", "recuperados", "decesos"], 1
+    )
 
-    # # merge data_embeddings with df_sird_prom
-    # data_embeddings = pd.merge(
-    #     data_embeddings, df_sird_prom, on="departamento")
+    # merge data_embeddings with df_sird_prom
+    data_embeddings = pd.merge(
+        data_embeddings, df_sird_prom, on="departamento")
 
     # get incidents predicted for the following week
     predict_incidencias.main()
-    exit(1)
 
     # merge data_embeddings with incidents predicted
     preds = np.load("./data/preds_incidencias.npy")

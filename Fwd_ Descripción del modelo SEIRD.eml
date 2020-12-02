@@ -1,0 +1,82 @@
+MIME-Version: 1.0
+Date: Thu, 19 Nov 2020 02:46:13 -0500
+From: Jose Aguilar <aguilarjos@gmail.com>
+Subject: =?utf-8?Q?Fwd:_Descripci=C3=B3n_del_modelo_SEIRD?=
+Thread-Topic: =?utf-8?Q?Descripci=C3=B3n_del_modelo_SEIRD?=
+Message-ID:
+ <CANzkAj8stTKgHftqaRcjQ8XuOhE8c+XsOtMCQuAObSJ94hMXCA@mail.gmail.com>
+To: =?utf-8?Q?Mauricio_Toro_Berm=C3=BAdez?= <mtorobe@eafit.edu.co>, 
+	Maria Eugenia Puerta Yepes <mpuerta@eafit.edu.co>, 
+	=?utf-8?Q?Camilo_Londo=C3=B1o_Lopez?= <clondo30@eafit.edu.co>
+Cc: Douglas Ardila Garces <dardila5@eafit.edu.co>, 
+	Yullis Quintero <yullisquintero@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="utf-8"
+
+<html><head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8"></=
+head><body><div dir=3D"ltr"><div>Amigos</div><div><br></div><div>Les hacemo=
+s llegar la descripcion a colocar en la pagina web del modelo SEIRD<br></di=
+v><div><br></div><div class=3D"gmail_quote"><div dir=3D"ltr"><div><span sty=
+le=3D"background-color:rgb(0,255,0)">Descripcion del modelo SEIRD.</span></=
+div><div><br></div><div></div>1. Descripci=C3=B3n:&nbsp; <div>Modelos que p=
+redicen para 4 d=C3=ADas, las variables Susceptibles, Expuestos, Infectados=
+, Recuperados y Decesos.</div><div><br></div><div>2. Instrucciones de uso:<=
+/div><div>Si para cada variable usted quiere conocer el estado del pa=C3=AD=
+s en los siguientes 4 d=C3=ADas, debe:<span style=3D"background-color:rgb(0=
+,255,0)"><span></span></span></div><div><ol><li style=3D"margin-left:15px">=
+Ubicarse en la gr=C3=A1fica de la variable de inter=C3=A9s.</li><li style=
+=3D"margin-left:15px">Ir al final de la l=C3=ADnea que dibuja el comportami=
+ento de la gr=C3=A1fica (color anaranjado).</li><li style=3D"margin-left:15=
+px">Despu=C3=A9s de la l=C3=ADnea negra vertical punteada, encontrar=C3=A1 =
+una l=C3=ADnea negra continua que muestra el comportamiento futuro (4 d=C3=
+=ADas) de la variable, tambi=C3=A9n se encontrar=C3=A1 una banda en color g=
+ris en la que es posible encontrar el valor futuro en caso tal no sea el di=
+bujado en la l=C3=ADnea.</li><li style=3D"margin-left:15px">Pasando el punt=
+ero por encima de la l=C3=ADnea del comportamiento futuro observar=C3=A1 el=
+ valor para cada d=C3=ADa.</li></ol><div>3. Detalles t=C3=A9cnicos:</div><d=
+iv>El modelo SEIRD&nbsp;consiste en varios modelos de Random Forest&nbsp; q=
+ue predicen los valores futuros (4 d=C3=ADas) para cada una de las variable=
+s. Estos modelos presentaron valores R2 de 99.28%, 97%, 95.36%, 85.3% y 66.=
+94% respectivamente, indicando que los modelos explican gran parte de la va=
+riabilidad de los datos reales y son muy buenos para replicar el comportami=
+ento de las variables.<font face=3D"arial, sans-serif"> Adem=C3=A1s se eval=
+u=C3=B3 la capacidad predictiva del modelo ajustado para cada variable con =
+la m=C3=A9trica &quot;Error medio de porcentaje absoluto&quot; (MAPE), con =
+75.42%, 21.58%, 17.43%, 18.01% y 21.54%, respectivamente.</font></div><div>=
+<p style=3D"box-sizing:inherit;margin:0px 0px 1em;line-height:1.4285em;text=
+-align:justify;color:rgba(0,0,0,0.87)"><font face=3D"arial, sans-serif"><br=
+></font></p><p style=3D"box-sizing:inherit;margin:0px 0px 1em;line-height:1=
+.4285em;text-align:justify;color:rgba(0,0,0,0.87)"><font face=3D"arial, san=
+s-serif">Los datos para entrenar los modelos fueron extra=C3=ADdos de la ba=
+se de datos del Instituto Nacional de Salud (INS), los cuales los podemos e=
+ncontrar en&nbsp;</font><span style=3D"color:rgb(34,34,34)"><a href=3D"http=
+s://nam10.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.datos.g=
+ov.co%2F&amp;data=3D04%7C01%7Cdardila5%40eafit.edu.co%7C7ad4a9b395aa4bfd0db=
+f08d88c5f2e82%7C99f7b55e9cbe467b8143919782918afb%7C0%7C0%7C6374136877229362=
+40%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1h=
+aWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DkJ1MaI%2FfN%2Ft0hpSDFKsgsGT9UZp1BSmWI=
+l5U67WQ6Pg%3D&amp;reserved=3D0" originalsrc=3D"https://www.datos.gov.co/" s=
+hash=3D"dxjlKEEhjWvZ4tg+U9s0AWvPdY+0Lw9mq4oiY/WJVn4SOwlRnLlfwbnnquoYy8d4Q7e=
+reOdfxQilufF+3fKsKBxciczQ7H3KHyGgg2pHOxgDltpQDeGG1WsY6ogq1NzmC/D6Jz5x/+MkVJ=
+IdQn0x6ooZabJB+OdSxdPOTb8qJXA=3D" target=3D"_blank">https://www.datos.gov.c=
+o</a>. La base de datos contiene informaci=C3=B3n de los casos positivos, l=
+os recuperados, las muertes y el n=C3=BAmero de pruebas realizadas de COVID=
+19 en cada departamento.</span></p></div></div><br></div></div></div>La inf=
+ormaci=C3=B3n contenida en este correo electr=C3=B3nico est=C3=A1 dirigida =
+=C3=BAnicamente a su destinatario y puede contener informaci=C3=B3n confide=
+ncial, material privilegiado o informaci=C3=B3n protegida por derecho de au=
+tor. Est=C3=A1 prohibida cualquier copia, utilizaci=C3=B3n, indebida retenc=
+i=C3=B3n, modificaci=C3=B3n, difusi=C3=B3n, distribuci=C3=B3n o reproducci=
+=C3=B3n total o parcial. Si usted recibe este mensaje por error, por favor =
+contacte al remitente y elim=C3=ADnelo. La informaci=C3=B3n aqu=C3=AD conte=
+nida es responsabilidad exclusiva de su remitente por lo tanto la Universid=
+ad EAFIT no se hace responsable de lo que el mensaje contenga. The informat=
+ion contained in this email is addressed to its recipient only and may cont=
+ain confidential information, privileged material or information protected =
+by copyright. Its prohibited any copy, use, improper retention, modificatio=
+n, dissemination, distribution or total or partial reproduction. If you rec=
+eive this message by error, please contact the sender and delete it. The in=
+formation contained herein is the sole responsibility of the sender therefo=
+re Universidad EAFIT is not responsible for what the message contains. </bo=
+dy></html>=

@@ -38,7 +38,7 @@ def main():
 
     # fit kmeans
     cluster_labels = kmeans_fit(df)
-    print(cluster_labels)
+    # print(cluster_labels)
 
     df.loc[:, 'cluster'] = cluster_labels
 
@@ -49,4 +49,3 @@ def main():
 if __name__ == "__main__":
     res = main()
     print(res)
-    print(len(res))

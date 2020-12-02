@@ -1,0 +1,5 @@
+Susceptible = exposed(t-5), exposed(t-6), infected(t-5), recovered(t-5), recovered(t-7)
+Exposed = susceptible(t-6), infected(t-7), deaths(t-5), deaths(t-7)
+Infected = exposed(t-6), exposed(t-7), deaths(t-5), deaths(t-6) 
+Recovered = susceptible(t-6), susceptible(t-7), exposed(t-5), exposed(t-6), exposed(t-7), infected(t-5), infected(t-7), deaths(t-5)
+Death = susceptible(t-5), exposed(t-5), exposed(t-6), infected(t-5), recovered(t-5), recovered(t-7)

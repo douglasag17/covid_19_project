@@ -4,7 +4,7 @@ import numpy as np
 from model import get_model
 from model import model
 import datetime
-
+import pickle as pkl
 
 class Dataset_allSeries():
     def __init__(self, window, forecast_window, departamentos):
@@ -25,7 +25,7 @@ class Dataset_allSeries():
         labels_raw = pd.DataFrame()
         features_test_raw = pd.DataFrame()
         labels_test_raw = pd.DataFrame()
-        # print("Cantidad de departamentos", len(self.departamentos))
+        print("Cantidad de departamentos", len(self.departamentos))
         for departamento in self.departamentos:
             features_data = train_data[train_data.departamento == departamento].reset_index()
 
@@ -46,8 +46,7 @@ class Dataset_allSeries():
             features_test_raw[departamento] = (np.log(features_test.infectados + np.finfo(float).eps))
             features_exp_smooth_test[departamento + 'smoothed'] = aux[-self.window_size:]
             labels_test_raw[departamento] =  labels_test.infectados
-
-        labels_test_raw = labels_test_raw.fillna(0)
+                
         data = tf.data.Dataset.from_tensor_slices(features_raw.values)
         data_labels = tf.data.Dataset.from_tensor_slices(labels_raw.values)
         data_test = tf.data.Dataset.from_tensor_slices(features_test_raw.values)
@@ -116,15 +115,17 @@ def generate_seq(until, lenght, starts_with=0):
 def mae_imp(y_true, y_pred):
     return tf.reduce_sum(tf.math.reduce_mean(tf.math.abs(tf.math.subtract(y_true,y_pred)), axis=1),axis = -1)
 
-def main():
-    data_aux = pd.read_csv('./data/sird_constantes_dia.csv')
+# def mae_imp(y_true, y_pred):
+#     return tf.reduce_sum(tf.math.reduce_mean(tf.math.abs(tf.math.subtract(y_true,y_pred)), axis=1),axis = -1)
+
+if __name__ == "__main__":
+    data_aux = pd.read_csv('../data/sird_constantes_dia.csv')
     fechas = data_aux.fecha.unique()
     init_date = fechas[len(fechas)-7]
     end_date = fechas[-1]
-    # print(init_date, len(fechas)-7, end_date)
-    train_set = data_aux[data_aux.fecha.isin(fechas[:len(fechas)-8])]
-    test_set =  data_aux[data_aux.fecha.isin(fechas[len(fechas)-8:len(fechas)-8 + 7])]
-
+    print(init_date, len(fechas)-7, end_date)
+    train_set = data_aux[data_aux.fecha.isin(fechas[:len(fechas)-7])]
+    test_set =  data_aux[data_aux.fecha.isin(fechas[len(fechas)-7:len(fechas)-7 + 7])]
     # Biggest subset
     data = {'train':train_set, 'test': test_set}
     departamentos = data['train']["departamento"].unique()
@@ -137,10 +138,9 @@ def main():
 
     dataset = Dataset_allSeries(window, forecast_window, departamentos)
     train_dataset, val_dataset = dataset.get_data_set(data, train_days, test_days)
-    net = get_model('model.h5', forecast_window, window, num_dep)
 
-    def mae_imp(y_true, y_pred):
-        return tf.reduce_sum(tf.math.reduce_mean(tf.math.abs(tf.math.subtract(y_true,y_pred)), axis=1),axis = -1)
+    net = get_model('model.h5', forecast_window, window, num_dep)
+    
     net.compile(loss=mae_imp, optimizer="adam")
     es_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', #val_loss
                                                    patience=8,
@@ -150,8 +150,7 @@ def main():
                     validation_data=val_dataset.batch(1),
                     epochs=5, 
                     callbacks = [es_callback])
-
+    print(val_dataset)
     preds = net.predict(val_dataset.batch(1))
-    print(preds)
-    with open('./data/preds_incidencias.npy', 'wb') as f:
+    with open('preds_{}_{}.npy'.format(init_date,end_date), 'wb') as f:
         np.save(f, preds)

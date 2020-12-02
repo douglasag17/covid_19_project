@@ -1,0 +1,14 @@
+- Articulo 2: que empezamos a trabajar todos el nuevo articulo como quedamos, cada quien sabe lo que le corresponde. Nos daremos 10 dias para que cada quien envie su draft de su parte (en ese momento haremos una reunion). Usaremos dos esquemas en las pruebas: con fit y partial fit (ambos resultados reportaremos, si es posible)
+
+Lo otro que no veo, y habiamos quedado, era trabajr de dos maneras c/vez:
+
+- reentrenando solo con los datos nuevos
+- reentrenando con todo el dataset
+
+deberian reportarse ambos resutlados
+
+
+- En todas las graficas hay que colocar unos comentarios. En 4.2 describiendo la arquitectura (yo lo terminare) y en 5.2.2 describiendo los resutlados. Por cierto, en la seccion 5.2.2, siguiendo la arquitectura de 4.2, no deberias colocar las graficas de todos los modelos, sino del ganador (que es el que seleccionas como resutlado final (lo que si puedes decir/comentar, es cual es el ganador y como se comporta el resto, mi duda es si esa discusion deberia ir en 5.3).
+- Deben narrar como hicieron los experimentos en 5.1
+
+Douglas, en 4.2 tambien habria que narrar como funcion RF incremental, ya que es el otro que usamos (puede quedespues lo movamos de seccion, pero en principio iria alli
