@@ -43,7 +43,48 @@ def main():
     df.loc[:, 'cluster'] = cluster_labels
 
     df['departamento'] = df.index
-    res = df[["departamento", "cluster"]].to_dict("records")
+
+    codigo_departamentos = {
+        'amazonas': '91',
+        'antioquia': '05',
+        'arauca': '81',
+        'atlantico': '08',
+        'bogota': '11',
+        'bolivar': '13',
+        'boyaca': '15',
+        'caldas': '17',
+        'caqueta': '18',
+        'casanare': '85',
+        'cauca': '19',
+        'cesar': '20',
+        'choco': '27',
+        'cordoba': '23',    
+        'cundinamarca': '25',
+        'guainia': '94',
+        'guaviare': '95',
+        'huila': '41',
+        'la guajira': '44',
+        'magdalena': '47',
+        'meta': '50',
+        'narino': '52',
+        'norte de santander': '54',
+        'putumayo': '86',
+        'quindio': '63',
+        'risaralda': '66',
+        'san andres y providencia': '88',
+        'santander': '68',
+        'sucre': '70',
+        'tolima': '73',
+        'valle del cauca': '76',
+        'vaupes': '97',
+        'vichada': '99'
+    }
+
+    data = df[["departamento", "cluster"]].to_dict()['cluster']
+    res = {}
+    for k, v in data.items():
+        res[codigo_departamentos[k]] = v
+
     return res
 
 if __name__ == "__main__":
